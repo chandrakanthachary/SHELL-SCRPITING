@@ -1,0 +1,26 @@
+#!/bin/bash
+sudo chown -R ec2-user:ec2-user /opt
+cd /opt
+sudo yum install git -y
+wget https://github.com/adoptium/temurin8-binaries/releases/download/jdk8u352-b08/OpenJDK8U-jdk_x64_linux_hotspot_8u352b08.tar.gz
+wget https://dlcdn.apache.org/tomcat/tomcat-8/v8.5.84/bin/apache-tomcat-8.5.84.tar.gz
+tar -zxvf OpenJDK8U-jdk_x64_linux_hotspot_8u352b08.tar.gz
+tar -zxvf apache-tomcat-8.5.84.tar.gz
+rm -rf *.gz
+mv apache-tomcat-8.5.84 tomcat
+mv jdk8u352-b08 java
+sudo sed -i '$a export JAVA_HOME=/opt/java' /etc/profile
+sudo sed -i '$a export PATH=$PATH:/opt/java/bin' /etc/profile
+source /etc/profile
+wget https://dlcdn.apache.org/maven/maven-3/3.8.7/binaries/apache-maven-3.8.7-bin.tar.gz
+tar -zxvf apache-maven-3.8.7-bin.tar.gz
+mv apache-maven-3.8.7 maven
+rm -rf *.gz
+sudo sed -i '$a export M2_HOME=/opt/maven' /etc/profile
+sudo sed -i '$a export PATH=$PATH:/opt/maven/bin' /etc/profile 
+source /etc/profile
+cd /opt/tomcat/webapps
+wget https://updates.jenkins.io/download/war/2.344/jenkins.war
+sudo yum install fontconfig -y
+sudo chown -R ec2-user:ec2-user /opt
+sh /opt/tomcat/bin/startup.sh
